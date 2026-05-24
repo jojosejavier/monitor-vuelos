@@ -9,7 +9,8 @@
       "Bash(Remove-Item *)",
       "PowerShell(Remove-Item *)",
       "PowerShell(python \"C:\\\\Users\\\\jjars\\\\OneDrive\\\\Documents\\\\Proyectos\\\\monitor-vuelos\\\\report.py\")",
-      "PowerShell(gh *)"
+      "PowerShell(gh *)",
+      "PowerShell(schtasks *)"
     ]
   }
 }

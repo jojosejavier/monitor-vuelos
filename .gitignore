@@ -18,3 +18,7 @@ venv/
 # IDE
 .vscode/
 .idea/
+
+# Archivos locales (no van al repo)
+guia de uso.txt
+instalar-tarea.ps1
