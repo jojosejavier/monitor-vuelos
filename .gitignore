@@ -1,0 +1,20 @@
+# Secrets
+.env
+
+# Database (datos locales, no van al repo)
+flights.db
+airport_ids.json
+
+# Nombre viejo del reporte (reemplazado por index.html)
+reporte.html
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/

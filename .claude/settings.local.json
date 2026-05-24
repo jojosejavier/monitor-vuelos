@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python monitor.py)",
+      "Bash(pip install *)",
+      "Bash(python report.py)",
+      "Bash(python -c ' *)",
+      "Bash(del flights.db)",
+      "Bash(Remove-Item *)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(python \"C:\\\\Users\\\\jjars\\\\OneDrive\\\\Documents\\\\Proyectos\\\\monitor-vuelos\\\\report.py\")",
+      "PowerShell(gh *)"
+    ]
+  }
+}
