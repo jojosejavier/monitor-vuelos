@@ -15,7 +15,7 @@ DATE_WINDOWS = [
     ("2027-02-20", "2027-02-27"),
 ]
 
-SERPAPI_URL = "https://serpapi.com/search"
+SERPAPI_URL = "https://serpapi.com/search" #revisar quota https://serpapi.com/plan
 
 
 def search_flights(departure_date: str, return_date: str) -> dict:
