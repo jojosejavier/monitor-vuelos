@@ -8,12 +8,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 pip install -r requirements.txt   # install dependencies
 
 python monitor.py                 # fetch flights from API and save to flights.db
-python report.py                  # read flights.db and generate reporte.html
+python report.py                  # read flights.db and generate index.html
+update.bat                        # full pipeline: fetch → report → git push (Windows)
 ```
 
 ## Architecture
 
-The project is a three-stage pipeline: **fetch → store → report**.
+The project is a three-stage pipeline: **fetch → store → report → deploy**.
 
 **`monitor.py`** — orchestrates the fetch stage. For each date window it calls the **SerpAPI Google Flights engine** (`https://serpapi.com/search?engine=google_flights`) using IATA codes directly (SJO → CUN). It filters out any itinerary whose first segment does not depart from `ORIGIN` (SJO), then passes the parsed results to `db.py`. No airport ID caching file is needed.
 
@@ -32,7 +33,32 @@ stops          INTEGER NOT NULL
 duration_min   INTEGER NOT NULL    (total flight duration in minutes)
 ```
 
-**`report.py`** — reads from `flight_prices` using pandas, annotates the cheapest row per date window (`is_min=True`), formats duration as `Xh Ym`, appends a Kayak deep-link per row, and renders `reporte.html` via an inline Jinja2 template. The min-price row gets the CSS class `min-price` (green highlight).
+**`report.py`** — reads from `flight_prices` using pandas, annotates the cheapest row per date window (`is_min=True`), formats duration as `Xh Ym`, appends a Kayak deep-link per row, and renders `index.html` via an inline Jinja2 template. The min-price row gets the CSS class `min-price` (green highlight).
+
+**`update.bat`** — Windows script that runs the full pipeline end to end:
+1. `python monitor.py` — fetch and store
+2. `python report.py` — generate `index.html`
+3. `git add index.html && git commit && git push` — publish to GitHub Pages
+
+## Deployment
+
+The report is published to **GitHub Pages**:
+- Repo: `https://github.com/jojosejavier/monitor-vuelos`
+- Live URL: `https://jojosejavier.github.io/monitor-vuelos/`
+
+The `index.html` in the repo root is what GitHub Pages serves. Every `git push` to `main` updates the live report automatically.
+
+## Automation (Windows Task Scheduler)
+
+The task **`MonitorVuelos`** is registered in Windows Task Scheduler to run `update.bat` automatically at every user logon, with a 1-minute delay to ensure network is available.
+
+| Action | Command |
+|---|---|
+| Run manually now | double-click `update.bat` or `schtasks /run /tn "MonitorVuelos"` |
+| Pause | `schtasks /change /tn "MonitorVuelos" /disable` |
+| Resume | `schtasks /change /tn "MonitorVuelos" /enable` |
+| Remove | `schtasks /delete /tn "MonitorVuelos" /f` |
+| Reinstall | run `instalar-tarea.ps1` as Administrator (self-elevating) |
 
 ## Key constants to update
 
@@ -66,12 +92,14 @@ SERPAPI_KEY=your_serpapi_key_here
 
 The API is **SerpAPI** (`serpapi.com`) using the `google_flights` engine — free tier has a limited monthly quota. If `parse_offers` returns 0 results, print `data.get("best_flights", [])[:1]` to inspect the raw payload and check for API/schema changes.
 
-## Generated files (not committed)
+## Generated / local files (not committed)
 
-| File | Created by |
-|---|---|
-| `flights.db` | `monitor.py` on first run |
-| `reporte.html` | `report.py` |
+| File | Created by | Notes |
+|---|---|---|
+| `flights.db` | `monitor.py` on first run | SQLite database |
+| `reporte.html` | legacy name, no longer used | replaced by `index.html` |
+| `guia de uso.txt` | manual | local usage guide |
+| `instalar-tarea.ps1` | manual | Task Scheduler installer, run as admin |
 
 ## Dependencies (`requirements.txt`)
 
